@@ -5,6 +5,7 @@ function composerController(
   $compile,
   $http,
   $injector,
+  $uibModal,
   MapManager,
   styleUpdater,
   stFeatureInfoService,
@@ -51,7 +52,7 @@ function composerController(
   });
 
   $rootScope.$on("pin-added", (event, chapter_index) => {
-    //$scope.$apply();
+    // $scope.$apply();
   });
 
   $rootScope.$on("chapter-added", (event, config) => {
@@ -109,9 +110,8 @@ function composerController(
   $scope.getMapWidth = preview => {
     if (preview === true) {
       return appConfig.dimensions.mapWidthPreviewMode;
-    } else {
-      return appConfig.dimensions.mapWidthEditMode;
     }
+    return appConfig.dimensions.mapWidthEditMode;
   };
 
   $scope.togglePreviewMode = () => {
@@ -140,6 +140,23 @@ function composerController(
 
   $scope.nextChapter = navigationSvc.nextChapter;
   $scope.previousChapter = navigationSvc.previousChapter;
+
+  $scope.openStoryModal = function(size) {
+    const uibmodalInstance = $uibModal.open({
+      templateUrl: "app/ui/templates/storyInfoModal.html",
+      size,
+      scope: $scope
+    });
+
+    uibmodalInstance.result.then(
+      (selectedItem) => {
+        $scope.selected = selectedItem;
+      },
+      () => {
+        $log.info("Modal dismissed at: " + new Date());
+      }
+    );
+  };
 }
 
 module.exports = composerController;
